@@ -8,6 +8,13 @@ const app = new Application({
     backgroundColor: 0x1099bb,
 })
 
+let backdrop = PIXI.Sprite.from('art/backdrop.png')
+backdrop.anchor.set(0.5)
+backdrop.x = app.view.width / 2
+backdrop.y = app.view.height / 2
+
+app.stage.addChild(backdrop)
+
 let player = PIXI.Sprite.from('art/scientistwithlegs.png')
 player.anchor.set(0.5)
 player.x = app.view.width / 2
