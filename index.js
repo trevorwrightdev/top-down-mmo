@@ -1,4 +1,5 @@
 const Application = PIXI.Application
+
 let w = 800
 let h = 500
 const app = new Application({
@@ -27,7 +28,7 @@ app.ticker.add(gameLoop)
 document.getElementsByClassName("container")[0].appendChild(app.view);
 
 function setDesiredPosition(e) {
-    console.log('move!')
+    // get desired position 
     let pos = e.data.global
     desiredPosition.x = pos.x
     desiredPosition.y = pos.y
@@ -41,5 +42,14 @@ function setDesiredPosition(e) {
 }
 
 function gameLoop() {
-    console.log('tick')
+    const speed = 3
+    // move player towards desired position 
+    let dx = desiredPosition.x - player.x
+    let dy = desiredPosition.y - player.y
+    let dist = Math.sqrt(dx * dx + dy * dy)
+    if (dist > 1 * speed) {
+        player.x += (dx / dist) * speed
+        player.y += (dy / dist) * speed
+    }
+    
 }
