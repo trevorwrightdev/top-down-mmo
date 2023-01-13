@@ -107,8 +107,8 @@ function setDesiredPosition(e) {
     socket.emit('move', { id, x: desiredPosition.x, y: desiredPosition.y })
 }
 
-function gameLoop() {
-    const speed = 3
+function gameLoop(deltaTime) {
+    const speed = 3 * deltaTime
     // move player towards desired position 
     let dx = desiredPosition.x - player.x
     let dy = desiredPosition.y - player.y
