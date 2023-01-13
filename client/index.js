@@ -35,6 +35,15 @@ socket.on('connect', () => {
         // get list of new players 
         let newPlayers = playerLocations.filter(player => !otherPlayers.some(p => p.id === player.id))
 
+        newPlayers = newPlayers.filter(player => player.id !== id)
+        newPlayers.forEach(e => {
+            let newPlayer = PIXI.Sprite.from('art/scientistwithlegs.png')
+            newPlayer.anchor.set(0.5)
+            newPlayer.x = e.x
+            newPlayer.y = e.y
+            app.stage.addChild(newPlayer)
+        })
+
         otherPlayers = playerLocations.filter(player => player.id !== id)
         console.log('OTHER PLAYERS: ', JSON.stringify(otherPlayers))
     })
