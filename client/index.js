@@ -1,4 +1,5 @@
-const socket = io('https://rocky-escarpment-91019.herokuapp.com/')
+// fix my socketio cors error
+const socket = io('https://rocky-escarpment-91019.herokuapp.com:80')
 
 const Application = PIXI.Application
 let otherPlayers = []
