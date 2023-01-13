@@ -1,4 +1,4 @@
-const socket = io('http://localhost:3000')
+const socket = io('https://rocky-escarpment-91019.herokuapp.com/')
 
 const Application = PIXI.Application
 let otherPlayers = []
