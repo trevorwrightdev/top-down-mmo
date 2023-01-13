@@ -1,3 +1,5 @@
+const socket = io('http://localhost:3000')
+
 const Application = PIXI.Application
 
 let w = 800
@@ -18,7 +20,7 @@ app.stage.addChild(backdrop)
 let player = PIXI.Sprite.from('art/scientistwithlegs.png')
 player.anchor.set(0.5)
 player.x = app.view.width / 2
-player.y = app.view.height / 2
+player.y = (app.view.height / 2) + 100
 
 let desiredPosition = {
     x: player.x,
