@@ -31,21 +31,34 @@ socket.on('connect', () => {
     id = socket.id
     socket.emit('getPlayerLocations')
     socket.on('playerLocations', playerLocations => {
-
+        // remove current player from list
+        playerLocations = playerLocations.filter(e => e.id !== id)
         // get list of new players 
-        let newPlayers = playerLocations.filter(player => !otherPlayers.some(p => p.id === player.id))
+        let newPlayers = playerLocations.filter(e => !otherPlayers.some(p => p.id === e.id))
+        // get list of old players 
+        let oldPlayers = playerLocations.filter(e => otherPlayers.some(p => p.id === e.id))
 
-        newPlayers = newPlayers.filter(player => player.id !== id)
+        // SPAWN NEW PLAYERS
         newPlayers.forEach(e => {
             let newPlayer = PIXI.Sprite.from('art/scientistwithlegs.png')
             newPlayer.anchor.set(0.5)
             newPlayer.x = e.x
             newPlayer.y = e.y
             app.stage.addChild(newPlayer)
-        })
+            otherPlayers.push({
+                id: e.id,
+                body: newPlayer,
+                desiredPosX: e.x,
+                desiredPosY: e.y,
+            })
+        }) 
 
-        otherPlayers = playerLocations.filter(player => player.id !== id)
-        console.log('OTHER PLAYERS: ', JSON.stringify(otherPlayers))
+        // iterate through old players and update their positions
+        oldPlayers.forEach(e => {
+            let otherIndex = otherPlayers.findIndex(p => p.id === e.id)
+            otherPlayers[otherIndex].desiredPosX = e.x
+            otherPlayers[otherIndex].desiredPosY = e.y
+        })
     })
 })
 
@@ -90,5 +103,20 @@ function gameLoop() {
         player.x += (dx / dist) * speed
         player.y += (dy / dist) * speed
     }
-    
+
+    for (let e of otherPlayers) {
+        let dx = e.desiredPosX - e.body.x
+        let dy = e.desiredPosY - e.body.y
+        let dist = Math.sqrt(dx * dx + dy * dy)
+        if (dist > 1 * speed) {
+            e.body.x += (dx / dist) * speed
+            e.body.y += (dy / dist) * speed
+        }
+
+        if (e.desiredPosX < e.body.x) {
+            e.body.scale.x = -1
+        } else if (e.desiredPosX > e.body.x) {
+            e.body.scale.x = 1
+        }
+    }
 }
