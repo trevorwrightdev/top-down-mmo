@@ -1,6 +1,7 @@
 const socket = io('http://localhost:3000')
 
 const Application = PIXI.Application
+let otherPlayers = []
 
 let w = 800
 let h = 500
@@ -21,6 +22,23 @@ let player = PIXI.Sprite.from('art/scientistwithlegs.png')
 player.anchor.set(0.5)
 player.x = app.view.width / 2
 player.y = (app.view.height / 2) + 100
+
+let id 
+
+// socket connection
+socket.on('connect', () => {
+    // get session id
+    id = socket.id
+    socket.emit('getPlayerLocations')
+    socket.on('playerLocations', playerLocations => {
+
+        // get list of new players 
+        let newPlayers = playerLocations.filter(player => !otherPlayers.some(p => p.id === player.id))
+
+        otherPlayers = playerLocations.filter(player => player.id !== id)
+        console.log('OTHER PLAYERS: ', JSON.stringify(otherPlayers))
+    })
+})
 
 let desiredPosition = {
     x: player.x,
@@ -48,6 +66,9 @@ function setDesiredPosition(e) {
     } else if (desiredPosition.x > player.x) {
         player.scale.x = 1
     }
+
+    // send new location to server
+    socket.emit('move', { id, x: desiredPosition.x, y: desiredPosition.y })
 }
 
 function gameLoop() {

@@ -4,6 +4,32 @@ const io = require('socket.io')(3000, {
     }
 })
 
+const users = []
+
 io.on('connection', socket => {
-    console.log(socket.id)
+    // now store the new player 
+    users.push({
+        id: socket.id,
+        x: 400,
+        y: 350,
+    })
+    console.log(users)
+    
+    socket.on('getPlayerLocations', () => {
+        io.emit('playerLocations', users)
+    })
+
+    // check for movement
+    socket.on('move', newLocation => {
+        // update player location 
+        users.forEach(user => {
+            if (user.id === socket.id) {
+                user.x = newLocation.x
+                user.y = newLocation.y
+            }
+        })
+        // send new location to all players 
+        io.emit('playerLocations', users)
+    })
+
 })
