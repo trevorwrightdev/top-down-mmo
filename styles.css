@@ -1,6 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@700&family=Share+Tech+Mono&display=swap');
+
+html {
+    background: black;
+}
+
+h1 {
+    text-align: center;
+    font-family: 'Share Tech Mono', monospace;
+    color: white;
+}
+
+
 .container {
     display: grid;
-    height: 100vh;
     width: 100%;
     place-items: center;
 }
