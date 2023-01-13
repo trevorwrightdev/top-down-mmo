@@ -33,6 +33,15 @@ socket.on('connect', () => {
     socket.on('playerLocations', playerLocations => {
         // remove current player from list
         playerLocations = playerLocations.filter(e => e.id !== id)
+
+        // get list of players that left the game
+        let leftPlayers = otherPlayers.filter(e => !playerLocations.some(p => p.id === e.id))
+        // remove players that left the game
+        leftPlayers.forEach(e => {
+            app.stage.removeChildAt(e.stageIndex)
+            otherPlayers = otherPlayers.filter(p => p.id !== e.id)
+        })
+
         // get list of new players 
         let newPlayers = playerLocations.filter(e => !otherPlayers.some(p => p.id === e.id))
         // get list of old players 
@@ -50,6 +59,7 @@ socket.on('connect', () => {
                 body: newPlayer,
                 desiredPosX: e.x,
                 desiredPosY: e.y,
+                stageIndex: app.stage.children.length - 1
             })
         }) 
 
@@ -59,6 +69,7 @@ socket.on('connect', () => {
             otherPlayers[otherIndex].desiredPosX = e.x
             otherPlayers[otherIndex].desiredPosY = e.y
         })
+        
     })
 })
 
@@ -75,6 +86,8 @@ app.stage.on('click', setDesiredPosition)
 
 app.ticker.add(gameLoop)
 document.getElementsByClassName("container")[0].appendChild(app.view);
+
+// get length of children on stage 
 
 function setDesiredPosition(e) {
     // get desired position 

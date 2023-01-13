@@ -4,7 +4,7 @@ const io = require('socket.io')(3000, {
     }
 })
 
-const users = []
+let users = []
 
 io.on('connection', socket => {
     // now store the new player 
@@ -31,5 +31,10 @@ io.on('connection', socket => {
         // send new location to all players 
         io.emit('playerLocations', users)
     })
+
+    socket.on('disconnect', () => {
+        users = users.filter(user => user.id !== socket.id)
+        io.emit('playerLocations', users)
+    });
 
 })
